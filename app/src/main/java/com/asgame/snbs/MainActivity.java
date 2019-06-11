@@ -1,5 +1,7 @@
 package com.asgame.snbs;
 
+import android.os.Handler;
+import android.text.TextUtils;
 import com.asgame.snbs.update.UpdateCheck;
 //import com.asgame.snbs.R;
 import android.annotation.SuppressLint;
@@ -12,103 +14,120 @@ import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.example.android_sn_jiyou_as.R;
+import com.jiyou.jydudailib.api.JYProxySDK;
+import com.jiyou.jydudailib.api.callback.JYDCallback;
 
 public class MainActivity extends Activity {
 
-	public WebView webView;
+    public WebView webView;
+    Handler handler;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        handler = new Handler(getMainLooper());
+        setContentView(R.layout.activity_main);
 
-		setContentView(R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        initView();
 
-		initView();
+        loadGame();
 
-		loadGame();
+        new UpdateCheck(this, R.string.ip);
+    }
 
-		new UpdateCheck(this, R.string.ip);
-	}
+    @SuppressLint("SetJavaScriptEnabled")
+    protected void initView() {
+        webView = (WebView) findViewById(R.id.webView1);
 
-	@SuppressLint("SetJavaScriptEnabled")
-	protected void initView() {
-		webView = (WebView) findViewById(R.id.webView1);
+        WebSettings webSettings = webView.getSettings();
 
-		WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);// 有js的页面都要设为true
 
-		webSettings.setJavaScriptEnabled(true);// 有js的页面都要设为true
+        webSettings.setLoadsImagesAutomatically(true); // 支持自动加载图片
+        webSettings.setDefaultTextEncodingName("utf-8");// 设置编码格式
 
-		webSettings.setLoadsImagesAutomatically(true); // 支持自动加载图片
-		webSettings.setDefaultTextEncodingName("utf-8");// 设置编码格式
+        String cacheDirPath = getFilesDir().getAbsolutePath() + "/webcache";// 设置缓存路径
+        webSettings.setAppCachePath(cacheDirPath);
 
-		String cacheDirPath = getFilesDir().getAbsolutePath() + "/webcache";// 设置缓存路径
-		webSettings.setAppCachePath(cacheDirPath);
+        webSettings.setAppCacheEnabled(true);// 是否使用缓存
+        webSettings.setDomStorageEnabled(true);// DOM Storage
 
-		webSettings.setAppCacheEnabled(true);// 是否使用缓存
-		webSettings.setDomStorageEnabled(true);// DOM Storage
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);// 根据cache-control决定是否从网络上取数据。
 
-		webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);// 根据cache-control决定是否从网络上取数据。
+        WebClient webclient = new WebClient();
+        IWebViewCache mWebViewCache = new WebViewCache(webView.getContext(), null);
+        webclient.setWebViewCache(mWebViewCache);
+        webView.setWebViewClient(webclient);
+        webView.setWebChromeClient(new WebChome());
+//		webView.addJavascriptInterface(new JSSupport(), "snapk");
+        webView.addJavascriptInterface(new JYDuWebViewJavaScriptFunction(MainActivity.this, webView), "JYProxySDK");
+    }
 
-		WebClient webclient = new WebClient();
-		IWebViewCache mWebViewCache = new WebViewCache(webView.getContext(), null);
-		webclient.setWebViewCache(mWebViewCache);
-		webView.setWebViewClient(webclient);
-		webView.setWebChromeClient(new WebChome());
-		webView.addJavascriptInterface(new JSSupport(), "snapk");
-	}
-
-	public void loadGame() {
+    public void loadGame() {
 //		webView.loadUrl(getResources().getString(R.string.ip) + "/h5mmo/game.php");
-		webView.loadUrl(getResources().getString(R.string.ip));
-	}
+//        webView.loadUrl(getResources().getString(R.string.ip));
+        JYProxySDK.getInstance().getGameUrl(MainActivity.this, new JYDCallback<String>() {
+            @Override
+            public void callback(int i, final String url) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!TextUtils.isEmpty(url)) {
+                            webView.loadUrl(url);
+                        }
+                    }
+                }, 10);
+            }
+        });
+    }
 
-	/**
-	 * 返回键切到上个页面
-	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			return false;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+    /**
+     * 返回键切到上个页面
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
-	/**
-	 * 据说这样能减少内存泄漏
-	 */
-	@Override
-	protected void onDestroy() {
-		webView.setVisibility(View.GONE);
-		webView.getSettings().setJavaScriptEnabled(false);
-		webView.removeAllViews();
-		webView.destroy();
-		System.exit(0);
-		super.onDestroy();
-	}
+    /**
+     * 据说这样能减少内存泄漏
+     */
+    @Override
+    protected void onDestroy() {
+        webView.setVisibility(View.GONE);
+        webView.getSettings().setJavaScriptEnabled(false);
+        webView.removeAllViews();
+        webView.destroy();
+        System.exit(0);
+        super.onDestroy();
+    }
 
-	/**
-	 * 挂到后台先停掉JS
-	 */
-	@SuppressLint("SetJavaScriptEnabled")
-	@Override
-	public void onResume() {
+    /**
+     * 挂到后台先停掉JS
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    public void onResume() {
 //		webView.getSettings().setJavaScriptEnabled(true);
 //		webView.onResume();
-		super.onResume();
-	}
+        super.onResume();
+    }
 
-	@Override
-	public void onStop() {
+    @Override
+    public void onStop() {
 //		webView.getSettings().setJavaScriptEnabled(false);
 //		webView.onPause();
-		super.onStop();
-	}
+        super.onStop();
+    }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 }
