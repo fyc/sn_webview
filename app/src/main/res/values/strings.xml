@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">神女传说_BS</string>
+    <string name="action_settings">Settings</string>
+    <string name="ip">https://cdn.sncs.game-as.com/xiaopu/game.php</string>
+</resources>
