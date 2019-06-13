@@ -3,6 +3,7 @@ package com.asgame.snbs;
 import android.content.Intent;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.widget.FrameLayout;
 import com.asgame.snbs.update.UpdateCheck;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -18,7 +19,7 @@ import com.example.android_sn_jiyou_as.R;
 import com.jiyou.jydudailib.api.callback.JYDCallback;
 
 public class MainActivity extends BaseActivity {
-
+    FrameLayout load_bg;
     public WebView webView;
     Handler handler;
     private static String mUrl = "";
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        load_bg = findViewById(R.id.load_bg);
         initView();
 
         loadGame();
@@ -67,7 +69,7 @@ public class MainActivity extends BaseActivity {
 
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);// 根据cache-control决定是否从网络上取数据。
 
-        WebClient webclient = new WebClient(this);
+        WebClient webclient = new WebClient(this, load_bg);
         IWebViewCache mWebViewCache = new WebViewCache(webView.getContext(), null);
         webclient.setWebViewCache(mWebViewCache);
         webView.setWebViewClient(webclient);

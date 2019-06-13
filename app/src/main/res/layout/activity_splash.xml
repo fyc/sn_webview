@@ -4,6 +4,6 @@
                 android:id="@+id/relativeLayout_splash"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/splash_background">
+                android:background="@drawable/shennv_splash_background">
 
 </RelativeLayout>
