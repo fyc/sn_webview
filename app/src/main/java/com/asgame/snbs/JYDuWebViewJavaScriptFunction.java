@@ -9,8 +9,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import com.asgame.snbs.model.InitBean;
+import com.asgame.snbs.utils.SDKControl;
 import com.google.jygson.JsonObject;
-import com.jiyou.jydudailib.api.JYProxySDK;
 import com.jiyou.jydudailib.api.callback.JYDCallback;
 import com.jiyou.jydudailib.api.constants.JYDStatusCode;
 import com.jiyou.jydudailib.api.model.JYDPayParam;
@@ -35,20 +35,14 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().init(context, new JYDCallback<String>() {
-                    @Override
-                    public void callback(int code, String response) {
-                        if (code == JYDStatusCode.SUCCESS) {
-                            JsonObject Obj = new JsonObject();
-                            Obj.addProperty("state", 1);
-                            JsonObject Obj2 = new JsonObject();
-                            Obj2.addProperty("osType", "android");
-                            Obj2.addProperty("isNative", true);
-                            Obj.add("data", Obj2);
-                            onGetPlatformSuccessed(Obj.toString());
-                        }
-                    }
-                });
+                JsonObject Obj = new JsonObject();
+                Obj.addProperty("state", 1);
+                JsonObject Obj2 = new JsonObject();
+                Obj2.addProperty("osType", "android");
+                Obj2.addProperty("isNative", true);
+                Obj.add("data", Obj2);
+                onGetPlatformSuccessed(Obj.toString());
+//                onGetPlatformSuccessed("true||android");
             }
         }, 100);
 
@@ -62,7 +56,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().init(context, new JYDCallback<String>() {
+                SDKControl.getInstance().init(context, new JYDCallback<String>() {
                     @Override
                     public void callback(int code, String response) {
                         if (code == JYDStatusCode.SUCCESS) {
@@ -81,7 +75,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().login(context, new JYDCallback<String>() {
+                SDKControl.getInstance().login(context, new JYDCallback<String>() {
                     @Override
                     public void callback(int code, String response) {
                         if (code == JYDStatusCode.SUCCESS) {
@@ -125,7 +119,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().createRole(context, roleParam);
+                SDKControl.getInstance().createRole(context, roleParam);
             }
         }, 100);
     }
@@ -137,7 +131,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().enterGame(context, roleParam);
+                SDKControl.getInstance().enterGame(context, roleParam);
             }
         }, 100);
 
@@ -151,7 +145,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().roleUpLevel(context, roleParam);
+                SDKControl.getInstance().roleUpLevel(context, roleParam);
             }
         }, 100);
     }
@@ -164,7 +158,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().pay(context, payParam);
+                SDKControl.getInstance().pay(context, payParam);
             }
         }, 100);
     }
@@ -174,7 +168,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().logout(context, new JYDCallback<String>() {
+                SDKControl.getInstance().logout(context, new JYDCallback<String>() {
                     @Override
                     public void callback(int code, String response) {
                         onLogoutSuccessed(response);
@@ -190,7 +184,7 @@ public class JYDuWebViewJavaScriptFunction {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                JYProxySDK.getInstance().loginAuthNotify(context, str);
+                SDKControl.getInstance().loginAuthNotify(context, str);
             }
         }, 100);
     }
