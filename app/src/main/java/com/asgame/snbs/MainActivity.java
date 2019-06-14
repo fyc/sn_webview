@@ -1,19 +1,18 @@
 package com.asgame.snbs;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.widget.FrameLayout;
-import com.asgame.snbs.update.UpdateCheck;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import com.asgame.snbs.utils.SDKControl;
 import com.example.android_sn_jiyou_as.R;
 import com.jiyou.jydudailib.api.callback.JYDCallback;
@@ -46,7 +45,7 @@ public class MainActivity extends BaseActivity {
 
         loadGame();
 
-        new UpdateCheck(this, R.string.ip);
+//        new UpdateCheck(this, R.string.ip);
         SDKControl.getInstance().onCreate(this, savedInstanceState);
     }
 
@@ -89,7 +88,7 @@ public class MainActivity extends BaseActivity {
                     public void run() {
                         if (!TextUtils.isEmpty(url)) {
                             webView.loadUrl(url);
-//                            webView.loadUrl("http://192.168.0.109:5500/CP_test.html");
+//                            webView.loadUrl("https://www.baidu.com");
                         }
                     }
                 }, 10);

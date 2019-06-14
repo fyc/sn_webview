@@ -8,7 +8,6 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import com.example.android_sn_jiyou_as.R;
 
 public class WebClient extends WebViewClient {
     private IWebViewCache mWebViewCache;

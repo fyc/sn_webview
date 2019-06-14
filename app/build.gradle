@@ -50,4 +50,5 @@ dependencies {
     implementation(name: 'jydudailib-release', ext: 'aar')
     implementation(name: 'jygeneralimplib-release', ext: 'aar')
     implementation(name: 'jysdklib-release', ext: 'aar')
+    implementation(name: 'toutiaopluginlib-release', ext: 'aar')
 }
