@@ -51,4 +51,5 @@ dependencies {
     implementation(name: 'jygeneralimplib-release', ext: 'aar')
     implementation(name: 'jysdklib-release', ext: 'aar')
     implementation(name: 'toutiaopluginlib-release', ext: 'aar')
+    implementation(name: 'AkSDK_PayWebNative-release', ext: 'aar')
 }
